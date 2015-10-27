@@ -7,7 +7,7 @@
 <body>
 	<div>
 		<h1>Create user</h1>
-		<form method="post" action="createUser">
+		<form method="post" action="user">
 			<div><input name="identifier" type="number" maxlength="11" min="1" required placeholder="Numeric Identifier"></div>
 			<div><input name="name" type="text" maxlength="255" required placeholder="Name"></div>
 			<div><input name="email" type="text" maxlength="255" required placeholder="Mail"></div>
@@ -16,7 +16,7 @@
 	</div>
 	<div>
 		<h1>Send message</h1>
-		<form method="post" action="addMessage">
+		<form method="post" action="message">
 			<div><input name="identifier" type="number" maxlength="11" min="1" required placeholder="Numeric Identifier"></div>
 			<div><textarea name="message" maxlength="255" required></textarea></div>
 			<div><input type="submit" value="Send"></div>
