@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class MessageList
+ * Servlet encargado de mostrar el listado de mensajes.
  */
 @WebServlet("/messageList")
 public class MessageList extends HttpServlet {
@@ -27,7 +26,7 @@ public class MessageList extends HttpServlet {
     }
 
 	/**
-	 * Devuelve el listado de mensajes completo o filtrado por usuario.
+	 * Método GET: Devuelve el listado de mensajes completo o filtrado por usuario.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter writer = response.getWriter();

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class User
+ * Servlet encargado de crear nuevos usuarios.
  */
 @WebServlet("/user")
 public class User extends HttpServlet {

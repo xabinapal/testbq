@@ -1,3 +1,6 @@
+/**
+ * Modelo de datos de la base de datos con la información de un mensaje.
+ */
 public class MessageModel {
 	private String user;
 	private String message;
