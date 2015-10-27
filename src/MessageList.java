@@ -1,8 +1,9 @@
-
-
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,7 +37,7 @@ public class MessageList extends HttpServlet {
 		int numericIdentifier = -1;
 		Boolean isValidIdentifier;
 		
-		if (identifier.length() == 0 || identifier.length() > 11) {
+		if (identifier == null || identifier.length() == 0 || identifier.length() > 11) {
 			isValidIdentifier = false;
 		} else {
 			try {
@@ -51,32 +52,53 @@ public class MessageList extends HttpServlet {
 			isValidIdentifier = User.checkIdentifier(numericIdentifier);
 		}
 		
-		List<MessageModel> messages;
+		// Mostrar listado de usuarios
+		writer.println("<form method=\"get\">");
+		writer.println("<select name=\"identifier\">");
+		writer.println("<option value=\"-1\">All</option>");
 		
+		Map<Integer, String> users = User.getList();
+		users.forEach((k,v) -> {
+			writer.println("<option value=\"" + k + "\">" + v + "</option>");
+		});
+		
+		writer.println("</select>");
+		writer.println("<input type=\"submit\" value=\"View\">");
+		writer.println("</form>");
+
+
+		// Mostrar listado de mensajes
+		
+		List<MessageModel> messages;
 		if (isValidIdentifier) {
+			writer.println("<h1>Messages " + User.getName(numericIdentifier) + "</h1>");
 			messages = getUserMessages(numericIdentifier);
 		} else {
+			writer.println("<h1>Messages</h1>");
+			
 			messages = getAllMessages();
 		}
 
-		writer.println("<ul>");
-		
-		for (MessageModel message : messages) {
-			//TODO: controlar inyección HTML, escapando caracteres
+		if (messages.isEmpty()) {
+			writer.println("No messages");
+		} else {
+			writer.println("<ul>");
 			
-			writer.println("<li>");
-			writer.println("<b>" + message.getUser() + ":</b> " + message.getMessage());
-			writer.println("</li>");
+			messages.forEach(m -> {
+				writer.println("<li>");
+				writer.println("<b>" + m.getUser() + ":</b> " + m.getMessage());
+				writer.println("</li>");
+			});
 		}
 
 		writer.println("</ul>");
 	}
 
 	private List<MessageModel> getUserMessages(int identifier) {
-		return null;
+		return new ArrayList<MessageModel>();
 	}
 	
 	private List<MessageModel> getAllMessages() {
-		return null;
+		return new ArrayList<MessageModel>();
 	}
 }

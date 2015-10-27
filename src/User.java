@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -74,6 +76,20 @@ public class User extends HttpServlet {
 	 */
 	public static Boolean checkIdentifier(int identifier) {
 		return true;
+	}
+	
+	/**
+	 * Devuelve el nombre de un usuario según su identificador
+	 */
+	public static String getName(int identifier) {
+		return "aaa";
+	}
+	
+	/**
+	 * Devuelve el listado completo de usuarios.
+	 */
+	public static Map<Integer, String> getList() {
+		return new HashMap<Integer, String>();
 	}
 
 	/**
