@@ -69,14 +69,23 @@ public class User extends HttpServlet {
 		writer.println("<a href=\"index.html\">Go back</a>");
 	}
 	
-	private Boolean checkIdentifier(int identifier) {
+	/**
+	 * Comprueba si un identificador de usuario existe.
+	 */
+	public static Boolean checkIdentifier(int identifier) {
 		return true;
 	}
 
+	/**
+	 * Crea un usuario en la base de datos.
+	 */
 	private Boolean createUser(int identifier, String name, String email) {
 		return true;
 	}
 	
+	/**
+	 * Envía un email al usuario registrado.
+	 */
 	private void sendMail(int identifier, String name, String email) {
 		
 	}
