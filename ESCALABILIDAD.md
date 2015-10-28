@@ -1,0 +1,5 @@
+A la hora de asegurar la escalabilidad de la aplicación la primera solución evidente es la implementación de la misma en un número elevado de servidores independientes, y controlados por un balanceador de carga encargado tanto de distribuir las peticiones entre los servidores, como de evitar enviar una petición a un servidor no disponible (por lo que ha de controlar en todo momento la disponibilidad de cada máquina).
+
+Por supuesto, separando todos los servicios requeridos por la aplicación (web, MySQL y SMTP) en otras máquinas aumenta el uptime del servicio (evitando que, por ejemplo, un fallo en uno de los servicios anule completamente el servidor). Estas otras máquinas, en la medida de lo posible, han de seguir el mismo sistema descrito en el primer párrafo, redundando sus funcionalidades en diferentes máquinas geográficamente independientes.
+
+En caso de redundar el servidor de bases de datos, es necesario crear un servicio de sincronización para que todas las instancias replicadas de la base de datos posean los mismos datos en todo momento y no se produzcan conflictos de información.
