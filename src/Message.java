@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet crear nuevos mensajes.
  */
-@WebServlet("/Message")
+@WebServlet("/message")
 public class Message extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -47,18 +47,54 @@ public class Message extends HttpServlet {
 		}
 		
 		if (isValidIdentifier) {
+			try {
+				isValidIdentifier = User.checkIdentifier(numericIdentifier);
+			}
+			catch (Exception e) {
+				e.printStackTrace(writer);
+				return;
+			}
+		}
+		
+		if (isValidIdentifier) {
 			String message = request.getParameter("message");
-			saveMessage(numericIdentifier, message);
+			if (!saveMessage(numericIdentifier, message)) {
+				writer.append("Unknown error. ");
+			} else {
+				writer.append("Message sent. ");
+			}
 		} else {
 			logError(identifier);
 		}
+
+		writer.println("<a href=\"index.html\">Go back</a>");
 	}
 	
-	private void saveMessage(int identifier, String message) {
-	
+	private Boolean saveMessage(int identifier, String message) {
+		// TODO: evitar inyección SQL, escapar parámetros
+		
+		try {
+			DatabaseHelper
+					.getInstance()
+					.executeUpdate("INSERT INTO `messages` (`user`, `message`) VALUES (" + identifier + ", '" + message + "');");
+			
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	private void logError(String identifier) {
 		// TODO: podría almacenarse la IP desde la que se ha producido el error.
+	
+
+		try {
+			DatabaseHelper
+					.getInstance()
+					.executeUpdate("INSERT INTO `error_logs` (`user_id`) VALUES ('" + identifier + "');");
+			
+		} catch (Exception e) {
+			// ignored
+		}
 	}
 }

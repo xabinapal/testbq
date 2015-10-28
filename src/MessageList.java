@@ -127,7 +127,7 @@ public class MessageList extends HttpServlet {
 	private List<MessageModel> getUserMessages(int identifier) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		ResultSet rs = DatabaseHelper
 				.getInstance()
-				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` WHERE `a`.`id` = " + identifier + " ORDER BY `b`.`date` DESC;");
+				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` ON `a`.`id` = `b`.`user` WHERE `a`.`id` = " + identifier + " ORDER BY `b`.`date` DESC;");
 		
 		return getMessages(rs);
 	}
@@ -135,7 +135,7 @@ public class MessageList extends HttpServlet {
 	private List<MessageModel> getAllMessages() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		ResultSet rs = DatabaseHelper
 				.getInstance()
-				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` ORDER BY `b`.`date` DESC;");
+				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` ON `a`.`id` = `b`.`user` ORDER BY `b`.`date` DESC;");
 		
 		return getMessages(rs);
 	}
