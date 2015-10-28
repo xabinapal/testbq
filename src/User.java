@@ -96,15 +96,35 @@ public class User extends HttpServlet {
 	/**
 	 * Devuelve el nombre de un usuario según su identificador
 	 */
-	public static String getName(int identifier) {
-		return "aaa";
+	public static String getName(int identifier) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		ResultSet rs = DatabaseHelper
+				.getInstance()
+				.executeQuery("SELECT `name` FROM `users` WHERE `id` = " + identifier + ";");
+		
+		rs.next();
+		
+		String name = rs.getString(1);
+		return name;
 	}
 	
 	/**
 	 * Devuelve el listado completo de usuarios.
 	 */
-	public static Map<Integer, String> getList() {
-		return new HashMap<Integer, String>();
+	public static Map<Integer, String> getList() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		ResultSet rs = DatabaseHelper
+				.getInstance()
+				.executeQuery("SELECT `id`, `name` FROM `users`;");
+		
+		Map<Integer, String> users = new HashMap<Integer, String>();
+		
+		while (rs.next()) {
+			int identifier = rs.getInt(1);
+			String name = rs.getString(2);
+			
+			users.put(identifier, name);
+		}
+		
+		return users;
 	}
 
 	/**

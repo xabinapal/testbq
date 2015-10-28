@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,52 +59,98 @@ public class MessageList extends HttpServlet {
 		}
 		
 		// Mostrar listado de usuarios
-		writer.println("<form method=\"get\">");
-		writer.println("<select name=\"identifier\">");
-		writer.println("<option value=\"-1\">All</option>");
 		
-		Map<Integer, String> users = User.getList();
-		users.forEach((k,v) -> {
-			writer.println("<option value=\"" + k + "\">" + v + "</option>");
-		});
-		
-		writer.println("</select>");
-		writer.println("<input type=\"submit\" value=\"View\">");
-		writer.println("</form>");
+		try {
+			Map<Integer, String> users = User.getList();
 
+			writer.println("<form method=\"get\">");
+			
+			writer.println("<select name=\"identifier\">");
+			writer.println("<option value=\"-1\">All</option>");
+			users.forEach((k,v) -> {
+				writer.println("<option value=\"" + k + "\">" + v + "</option>");
+			});
+
+			writer.println("</select>");
+			writer.println("<input type=\"submit\" value=\"View\">");
+			writer.println("</form>");
+		} catch (Exception e) {
+			e.printStackTrace(writer);
+		} 
 
 		// Mostrar listado de mensajes
 		
-		List<MessageModel> messages;
+		List<MessageModel> messages = null;
 		if (isValidIdentifier) {
-			writer.println("<h1>Messages " + User.getName(numericIdentifier) + "</h1>");
-			messages = getUserMessages(numericIdentifier);
+			String name = "";
+			try {
+				name = User.getName(numericIdentifier);
+			} catch (Exception e) {
+				e.printStackTrace(writer);
+			}
+			
+			writer.println("<h1>Messages " + name + "</h1>");
+			try {
+				messages = getUserMessages(numericIdentifier);
+			} catch (Exception e) {
+				e.printStackTrace(writer);
+			}
 		} else {
 			writer.println("<h1>Messages</h1>");
 			
-			messages = getAllMessages();
+			try {
+				messages = getAllMessages();
+			} catch (Exception e) {
+				e.printStackTrace(writer);
+			}
 		}
 
-		if (messages.isEmpty()) {
-			writer.println("No messages");
-		} else {
-			writer.println("<ul>");
-			
-			messages.forEach(m -> {
-				writer.println("<li>");
-				writer.println("<b>" + m.getUser() + ":</b> " + m.getMessage());
-				writer.println("</li>");
-			});
+		if (messages != null) {
+			if (messages.isEmpty()) {
+				writer.println("No messages");
+			} else {
+				writer.println("<ul>");
+				
+				messages.forEach(m -> {
+					writer.println("<li>");
+					writer.println("<b>" + m.getUser() + ":</b> " + m.getMessage());
+					writer.println("</li>");
+				});
+			}
 		}
 
 		writer.println("</ul>");
+
+		writer.println("<a href=\"index.html\">Go back</a>");
 	}
 
-	private List<MessageModel> getUserMessages(int identifier) {
-		return new ArrayList<MessageModel>();
+	private List<MessageModel> getUserMessages(int identifier) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		ResultSet rs = DatabaseHelper
+				.getInstance()
+				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` WHERE `a`.`id` = " + identifier + " ORDER BY `b`.`date` DESC;");
+		
+		return getMessages(rs);
 	}
 	
-	private List<MessageModel> getAllMessages() {
-		return new ArrayList<MessageModel>();
+	private List<MessageModel> getAllMessages() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		ResultSet rs = DatabaseHelper
+				.getInstance()
+				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` ORDER BY `b`.`date` DESC;");
+		
+		return getMessages(rs);
+	}
+	
+	private List<MessageModel> getMessages(ResultSet rs) throws SQLException {
+		List<MessageModel> messages = new ArrayList<MessageModel>();
+		
+		while (rs.next()) {
+			String user = rs.getString(1);
+			String message = rs.getString(2);
+			
+			MessageModel msg = new MessageModel(user, message);
+			messages.add(msg);
+		}
+		
+		return messages;
 	}
 }
