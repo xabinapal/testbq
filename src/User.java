@@ -65,7 +65,7 @@ public class User extends HttpServlet {
 			if (identifierExists) {
 				writer.println("Identifier already exists. ");
 			} else {
-				Boolean userCreated = createUser(numericIdentifier, name, email);
+				Boolean userCreated = createUser(numericIdentifier, name, email, writer);
 				
 				if (userCreated) {
 					sendMail(numericIdentifier, name, email);
@@ -110,14 +110,16 @@ public class User extends HttpServlet {
 	/**
 	 * Crea un usuario en la base de datos.
 	 */
-	private Boolean createUser(int identifier, String name, String email) {
+	private Boolean createUser(int identifier, String name, String email, PrintWriter writer) {
+		// TODO: evitar inyección SQL en los parámetros
+		
 		try {
-			ResultSet rs = DatabaseHelper
+			DatabaseHelper
 					.getInstance()
-					.executeQuery("INSERT INTO `users` VALUES (" + identifier + ", '" + name + "', '" + email + "');");
-			rs.close();
+					.executeUpdate("INSERT INTO `users` VALUES (" + identifier + ", '" + name + "', '" + email + "');");
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace(writer);
 			return false;
 		}
 	}

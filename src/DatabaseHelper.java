@@ -36,4 +36,10 @@ public class DatabaseHelper {
 		ResultSet resultSet = statement.executeQuery(query);
 		return resultSet;
 	}
+	
+	public int executeUpdate(String query) throws SQLException {
+		Statement statement = connection.createStatement();
+		int rowCount = statement.executeUpdate(query);
+		return rowCount;
+	}
 }
