@@ -1,9 +1,19 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -68,7 +78,14 @@ public class User extends HttpServlet {
 				Boolean userCreated = createUser(numericIdentifier, name, email, writer);
 				
 				if (userCreated) {
+					try {
 					sendMail(numericIdentifier, name, email);
+					}
+					catch (Exception e) {
+						// La excepción ocurre siempre en mi máquina,
+						// ya que no dispongo de servicio de correo saliente.
+						e.printStackTrace(writer);
+					}
 					writer.println("User created. ");
 				} else {
 					writer.println("Error creating user.");
@@ -146,8 +163,20 @@ public class User extends HttpServlet {
 	
 	/**
 	 * Envía un email al usuario registrado.
+	 * @throws MessagingException 
+	 * @throws UnsupportedEncodingException 
 	 */
-	private void sendMail(int identifier, String name, String email) {
-		
+	private void sendMail(int identifier, String name, String email) throws UnsupportedEncodingException, MessagingException {
+		Properties properties = System.getProperties();
+		Session session = Session.getDefaultInstance(properties);
+
+		Message msg = new MimeMessage(session);
+		msg.setFrom(new InternetAddress("system@testbq.com", "Test BQ"));
+		msg.addRecipient(
+				Message.RecipientType.TO,
+				new InternetAddress(email, name));
+		msg.setSubject("Cuenta creada");
+		msg.setText("Usuario " + name + " con identificador + " + identifier + " creado.");
+		Transport.send(msg);
 	}
 }
