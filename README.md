@@ -1,3 +1,5 @@
+*NOTA*: la memoria sobre la escalabilidad se encuentra en el fichero ESCALABILIDAD.md
+
 Aplicación web desarrollada en Java y que corre bajo un servidor Tomcat.
 
 Requiere el driver de conexión MySQL y un servidor al que conectar, donde se almacenarán todos los datos de usuarios y mensajes. El script de creación de tablas es testbq.sql
@@ -19,3 +21,5 @@ El resto de la aplicación se compone de varios servlets para cada una de las ac
 - MessageModel.java: es el modelado de un mensaje extraído de la base de datos.
 
 - DatabaseHelper.java: clase utilizada para facilitar la comunicación con la base de datos.
+
+La principal cuestión a mejorar sería las comprobaciones de seguridad sobre todos los inputs del usuario, evitando inyecciones HTML, XSS o SQL.
