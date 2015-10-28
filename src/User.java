@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +54,13 @@ public class User extends HttpServlet {
 			String name = request.getParameter("name");
 			String email = request.getParameter("email");
 			
-			Boolean identifierExists = checkIdentifier(numericIdentifier);
+			Boolean identifierExists;
+			try {
+				identifierExists = checkIdentifier(numericIdentifier);
+			} catch (Exception e) {
+				e.printStackTrace(writer);
+				return;
+			}
 			
 			if (identifierExists) {
 				writer.println("Identifier already exists. ");
@@ -74,8 +82,15 @@ public class User extends HttpServlet {
 	/**
 	 * Comprueba si un identificador de usuario existe.
 	 */
-	public static Boolean checkIdentifier(int identifier) {
-		return true;
+	public static Boolean checkIdentifier(int identifier) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		ResultSet rs = DatabaseHelper
+				.getInstance()
+				.executeQuery("SELECT 1 FROM `users` WHERE `id` = " + identifier + ";");
+		
+		Boolean exists = rs.next();
+		rs.close();
+		
+		return exists;
 	}
 	
 	/**
@@ -96,7 +111,15 @@ public class User extends HttpServlet {
 	 * Crea un usuario en la base de datos.
 	 */
 	private Boolean createUser(int identifier, String name, String email) {
-		return true;
+		try {
+			ResultSet rs = DatabaseHelper
+					.getInstance()
+					.executeQuery("INSERT INTO `users` VALUES (" + identifier + ", '" + name + "', '" + email + "');");
+			rs.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	/**

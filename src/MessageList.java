@@ -48,7 +48,12 @@ public class MessageList extends HttpServlet {
 		}
 		
 		if (isValidIdentifier) {
-			isValidIdentifier = User.checkIdentifier(numericIdentifier);
+			try {
+				isValidIdentifier = User.checkIdentifier(numericIdentifier);
+			} catch (Exception e) {
+				e.printStackTrace(writer);
+				return;
+			}
 		}
 		
 		// Mostrar listado de usuarios

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 27-10-2015 a las 23:49:24
+-- Tiempo de generación: 28-10-2015 a las 01:34:03
 -- Versión del servidor: 5.5.38
 -- Versión de PHP: 5.6.2
 
@@ -55,13 +55,9 @@ CREATE TABLE `messages` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `message` varchar(255) NOT NULL DEFAULT ''
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `mail` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Índices para tablas volcadas
---
 
 --
 -- Indices de la tabla `error_logs`
@@ -80,10 +76,6 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `users`
  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
 
 --
 -- AUTO_INCREMENT de la tabla `error_logs`
