@@ -91,7 +91,7 @@ public class MessageList extends HttpServlet {
 			
 			writer.println("<h1>Messages " + name + "</h1>");
 			try {
-				messages = getUserMessages(numericIdentifier);
+				messages = MessageList.getUserMessages(numericIdentifier);
 			} catch (Exception e) {
 				e.printStackTrace(writer);
 			}
@@ -99,7 +99,7 @@ public class MessageList extends HttpServlet {
 			writer.println("<h1>Messages</h1>");
 			
 			try {
-				messages = getAllMessages();
+				messages = MessageList.getAllMessages();
 			} catch (Exception e) {
 				e.printStackTrace(writer);
 			}
@@ -121,26 +121,31 @@ public class MessageList extends HttpServlet {
 
 		writer.println("</ul>");
 
-		writer.println("<a href=\"index.html\">Go back</a>");
+		if (isValidIdentifier) {
+			writer.println("<div><a href=\"export.csv?identifier=" + identifier + "\">Export CSV</a></div>");
+		} else {
+			writer.println("<div><a href=\"export.csv\">Export CSV</a></div>");
+		}
+		writer.println("<div><a href=\"index.html\">Go back</a></div>");
 	}
 
-	private List<MessageModel> getUserMessages(int identifier) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static List<MessageModel> getUserMessages(int identifier) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		ResultSet rs = DatabaseHelper
 				.getInstance()
 				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` ON `a`.`id` = `b`.`user` WHERE `a`.`id` = " + identifier + " ORDER BY `b`.`date` DESC;");
 		
-		return getMessages(rs);
+		return MessageList.getMessages(rs);
 	}
 	
-	private List<MessageModel> getAllMessages() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static List<MessageModel> getAllMessages() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		ResultSet rs = DatabaseHelper
 				.getInstance()
 				.executeQuery("SELECT `a`.`name`, `b`.`message` FROM `users` AS `a` INNER JOIN `messages` AS `b` ON `a`.`id` = `b`.`user` ORDER BY `b`.`date` DESC;");
 		
-		return getMessages(rs);
+		return MessageList.getMessages(rs);
 	}
 	
-	private List<MessageModel> getMessages(ResultSet rs) throws SQLException {
+	private static List<MessageModel> getMessages(ResultSet rs) throws SQLException {
 		List<MessageModel> messages = new ArrayList<MessageModel>();
 		
 		while (rs.next()) {
